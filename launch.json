@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "BackendApplication",
+      "request": "launch",
+      "mainClass": "com.hospital.backend.BackendApplication",
+      "projectName": "backend",
+      "env": {
+        "DB_USERNAME": "postgres",
+        "DB_PASSWORD": "Calia2020"
+      }
+    }
+  ]
+}
