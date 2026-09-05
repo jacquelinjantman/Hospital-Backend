@@ -20,7 +20,11 @@ public class Doctor {
     @Column(unique = true, nullable = false)
     private String matricula;
 
-    public Doctor() {}
+    @Column(nullable = false)
+    private Boolean activo = true;
+
+    public Doctor() {
+    }
 
     public Long getId() {
         return id;
@@ -53,4 +57,12 @@ public class Doctor {
     public void setMatricula(String matricula) {
         this.matricula = matricula;
     }
+
+    public Boolean getActivo() {
+    return activo;
+}
+
+public void setActivo(Boolean activo) {
+    this.activo = activo;
+}
 }
