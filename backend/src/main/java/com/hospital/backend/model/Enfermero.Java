@@ -20,6 +20,9 @@ public class Enfermero {
     @Column(unique = true, nullable = false)
     private String matricula;
 
+    @Column(nullable = false)
+private Boolean activo = true;
+
     public Enfermero() {}
 
     public Long getId() {
@@ -53,4 +56,12 @@ public class Enfermero {
     public void setMatricula(String matricula) {
         this.matricula = matricula;
     }
+
+    public Boolean getActivo() {
+    return activo;
+}
+
+public void setActivo(Boolean activo) {
+    this.activo = activo;
+}
 }
