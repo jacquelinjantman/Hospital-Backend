@@ -17,6 +17,9 @@ public class Administrador {
     @Column(name = "nombre_completo", nullable = false)
     private String nombreCompleto;
 
+    @Column(nullable = false)
+private Boolean activo = true;
+
     public Administrador() {}
 
     public Long getId() {
@@ -42,4 +45,12 @@ public class Administrador {
     public void setNombreCompleto(String nombreCompleto) {
         this.nombreCompleto = nombreCompleto;
     }
+
+    public Boolean getActivo() {
+    return activo;
+}
+
+public void setActivo(Boolean activo) {
+    this.activo = activo;
+}
 }
