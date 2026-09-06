@@ -32,7 +32,7 @@ public class JwtUtil {
 
     }
 
-    public boolean activarToken(String token){
+    public boolean validarToken(String token){
         try{
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
             return true;
@@ -40,4 +40,13 @@ public class JwtUtil {
             return false;
         }
     }
+
+    public String extraerRol(String token) {
+    return Jwts.parser()
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .get("rol", String.class);
+}
 }
