@@ -5,7 +5,7 @@ import com.hospital.backend.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
@@ -38,13 +38,14 @@ public class DoctorController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/baja")
-    public ResponseEntity<String> darDeBaja(@PathVariable Long id) {
-        try {
-            doctorService.darDeBaja(id);
-            return ResponseEntity.ok("Doctor dado de baja correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+ @PreAuthorize("hasRole('DIRECTOR')")
+@PatchMapping("/{id}/baja")
+public ResponseEntity<String> darDeBaja(@PathVariable Long id) {
+    try {
+        doctorService.darDeBaja(id);
+        return ResponseEntity.ok("Doctor dado de baja correctamente");
+    } catch (RuntimeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
+}
 }
