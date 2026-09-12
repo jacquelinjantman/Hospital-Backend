@@ -4,6 +4,7 @@ import com.hospital.backend.model.Paciente;
 import com.hospital.backend.service.PacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class PacienteController {
     @Autowired
     private PacienteService pacienteService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR', 'DOCTOR')")
     @GetMapping
     public List<Paciente> listarTodos() {
         return pacienteService.listarTodos();
