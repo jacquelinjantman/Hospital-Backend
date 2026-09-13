@@ -24,10 +24,10 @@ public class TurnoController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired 
+    @Autowired
     private DoctorRepository doctorRepository;
 
-    @Autowired 
+    @Autowired
     private PacienteRepository pacienteRepository;
 
     @GetMapping
@@ -35,33 +35,31 @@ public class TurnoController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         var usuario = usuarioRepository.findByEmail(email).orElseThrow();
 
-        return switch(usuario.getRol()){
+        return switch (usuario.getRol()) {
             case DIRECTOR, ADMIN -> turnoService.listarTodos();
 
             case DOCTOR -> {
                 var doctor = doctorRepository.findAll().stream()
-                .filter(d -> d.getUsuario().getId().equals(usuario.getId()))
-                .findFirst()
-                .orElseThrow();
+                        .filter(d -> d.getUsuario().getId().equals(usuario.getId()))
+                        .findFirst()
+                        .orElseThrow();
                 yield turnoService.listarTodos().stream()
-                .filter(t -> t.getDoctor().getId().equals(doctor.getId()))
-                .collect(Collectors.toList());
+                        .filter(t -> t.getDoctor().getId().equals(doctor.getId()))
+                        .collect(Collectors.toList());
             }
 
             case PACIENTE -> {
                 var paciente = pacienteRepository.findAll().stream()
-                .filter(p -> p.getUsuario().getId().equals(usuario.getId()))
-                .findFirst()
-                .orElseThrow();
+                        .filter(p -> p.getUsuario().getId().equals(usuario.getId()))
+                        .findFirst()
+                        .orElseThrow();
                 yield turnoService.listarTodos().stream()
-                .filter(t -> t.getPaciente().getId().equals(paciente.getId()))
-                .collect(Collectors.toList());
+                        .filter(t -> t.getPaciente().getId().equals(paciente.getId()))
+                        .collect(Collectors.toList());
             }
             default -> List.of();
         };
     }
-       
-    
 
     @GetMapping("/{id}")
     public ResponseEntity<Turno> buscarPorId(@PathVariable Long id) {
@@ -71,8 +69,13 @@ public class TurnoController {
     }
 
     @PostMapping
-    public Turno crear(@RequestBody Turno turno) {
-        return turnoService.guardar(turno);
+    public ResponseEntity<?> crear(@RequestBody Turno turno) {
+        try {
+            Turno nuevo = turnoService.guardar(turno);
+            return ResponseEntity.ok(nuevo);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
