@@ -1,4 +1,4 @@
-package com.hospital.backend.test;
+package com.hospital.backend.service;
 
 import com.hospital.backend.model.Doctor;
 import com.hospital.backend.model.EstadoTurno;
