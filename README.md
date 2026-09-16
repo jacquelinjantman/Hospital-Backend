@@ -81,6 +81,24 @@ Mejoras a futuro
 - modulo de triage/emergencias
 - variables de entorno para credenciales en lugar de valores directo
 
+Documentación interactiva (Swagger)
+
+Con el proyecto corriendo, la API cuenta con documentación interactiva generada automáticamente vía springdoc-openapi:
+
+http://localhost:8080/swagger-ui/index.html
+
+Desde ahí se pueden ver todos los endpoints agrupados por Controller, sus parámetros y modelos de datos, y probarlos directamente sin salir del navegador.
+
+Para probar endpoints protegidos con JWT desde Swagger:
+
+Hacer login (POST /api/auth/login) desde cualquier cliente (o desde el propio Swagger) y copiar el token de la respuesta.
+En la esquina superior derecha de la página, hacer clic en Authorize 🔒.
+Pegar el token (sin la palabra Bearer, Swagger la agrega automáticamente).
+Confirmar con Authorize y cerrar el diálogo.
+A partir de ahí, todas las peticiones que se prueben desde la interfaz incluyen el token automáticamente.
+
+El JSON crudo de la especificación OpenAPI está disponible en http://localhost:8080/v3/api-docs.
+
 Autora
 
 Proyecto desarrollado por Jacqueline Jantman como parte de mi portfolio de desarrollo backend.
