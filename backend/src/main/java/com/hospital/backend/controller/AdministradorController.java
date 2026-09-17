@@ -13,7 +13,7 @@ import java.util.List;
 public class AdministradorController {
 
     @Autowired
-    private AdministradorService administradorService;
+  private AdministradorService administradorService;
 
     @GetMapping
     public List<Administrador> listarTodos() {
