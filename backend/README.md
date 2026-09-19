@@ -1,0 +1,133 @@
+API REST para gestion de un centro de salud, esta desarrollada con Java+SpringBoot,
+autenticacion JWT, autorizacion de roles jerarquicos y reglas de negocio (turnos,
+disponibilidad medica, bajas de usuario).
+
+Tabla de contenidos:
+- stack tecnologico
+- arquitectura
+- modelo de datos
+- seguridad y autenticacion
+- roles y permisos
+- instalacion y configuracion
+- endpoints
+- flujos de prueba
+- reglas de negocio
+
+  Stack:
+  -Java 21
+  - Spring Boot (Spring Data JPA/Hibernate, Spring Security)
+  - PosgrSQL
+  - JWT(jjwt)
+  - BCrypt
+  - Maven
+
+  Arquitectura:
+  Cliente (Postman / Frontend)
+        │
+        ▼
+   Controller      → Recibe requests HTTP, valida permisos por rol (@PreAuthorize)
+        │
+        ▼
+    Service        → Lógica de negocio y validaciones
+        │
+        ▼
+   Repository      → Acceso a datos (Spring Data JPA)
+        │
+        ▼
+   PostgreSQL
+
+  Modelo de datos
+  - usuario: entidad base de autenticacion (email, contrasena, hasheada, rol) se relaciona
+    por composicion con las entidades de dominio
+  - Paciente/Doctor/Enfermero/administrador: vinculada 1 a 1 con usuario
+  - Especialidad: catalogo de especialidades medicas
+  - DoctorEspecialidad/EnfermeroSector/AdministradorSector: tablas intermedias con clave compuesta (@EmbeddedId)
+  modelando que un doctor puede atender varias especialidades y que enfermeros/admin rotan por distintos sectores.
+  - DisponibilidadDOctor: bloques de horarios en los que el doctor atiende
+  - Turno: entidad central del sistema - esta conecta al pacaiente y doctor en una fecha/hora, con trazabilidad de auditoria
+    quien lo creo/modifico)
+
+    Diagrama simplificado
+    Usuario (1) ─── (1) Paciente
+Usuario (1) ─── (1) Doctor ─── (N) DoctorEspecialidad ─── (N) Especialidad
+Usuario (1) ─── (1) Enfermero ─── (N) EnfermeroSector ─── (N) Especialidad
+Usuario (1) ─── (1) Administrador ─── (N) AdministradorSector ─── (N) Especialidad
+
+Doctor (1) ─── (N) DisponibilidadDoctor
+Doctor (1) ─── (N) Turno ─── (N) Paciente (1)
+
+Seguridad y Autenticacion
+Implementa autenticacion stateless basada en JW
+filtro (JwtFilter) intercepta cada request
+validacion de token
+autenticacion de usuario
+
+Roles y permisos
+Director - maxima autoridad, unico rol habilitado para dar de baja a un Doctor
+ADMIN - personal de administracion, gestiona pacientes, doctores y turnos
+Doctor - ve y gestiona sus propios turnos
+Enfermero - Rota por distintos sectores
+Paciente - ve solo sus propios turnos
+
+Instalacion y configuracion
+JDK 32
+PostgreSQL18
+Maven
+
+Mejoras a futuro
+- Documentacion interactiva de la API con OpenAPI
+- Test automatizados para services y controllers
+- migraciones de base de datos versionadas mas apropiado para un entorno de produccion
+- modulo de triage/emergencias
+- variables de entorno para credenciales en lugar de valores directo
+
+Documentación interactiva (Swagger)
+
+Con el proyecto corriendo, la API cuenta con documentación interactiva generada automáticamente vía springdoc-openapi:
+
+http://localhost:8080/swagger-ui/index.html
+
+Desde ahí se pueden ver todos los endpoints agrupados por Controller, sus parámetros y modelos de datos, y probarlos directamente sin salir del navegador.
+
+Para probar endpoints protegidos con JWT desde Swagger:
+
+Hacer login (POST /api/auth/login) desde cualquier cliente (o desde el propio Swagger) y copiar el token de la respuesta.
+En la esquina superior derecha de la página, hacer clic en Authorize 🔒.
+Pegar el token (sin la palabra Bearer, Swagger la agrega automáticamente).
+Confirmar con Authorize y cerrar el diálogo.
+A partir de ahí, todas las peticiones que se prueben desde la interfaz incluyen el token automáticamente.
+
+El JSON crudo de la especificación OpenAPI está disponible en http://localhost:8080/v3/api-docs.
+
+Despliegue (Docker + Render)
+La aplicación está containerizada con Docker (build multi-stage: compila con Maven en una imagen, y corre con una imagen liviana solo con el JRE) y desplegada en Render como Web Service, con una base de datos PostgreSQL administrada también en Render.
+
+Demo en vivo
+
+El proyecto está desplegado y funcionando en Render (Web Service + PostgreSQL):
+
+Documentación interactiva (Swagger): https://hospital-backend-ylwn.onrender.com/swagger-ui/index.html
+API base: https://hospital-backend-ylwn.onrender.com
+
+
+Clonar el repositorio
+   git clone https://github.com/jacquelinjantman/Hospital-Backend.git
+   cd Hospital-Backend/backend
+
+   Base de datos en PostgreSQL
+       CREATE DATABASE hospital_db;
+
+       Configurar application.properties
+          spring.datasource.url=jdbc:postgresql://localhost:5432/hospital_db
+   spring.datasource.username=usuario
+   spring.datasource.password=contraseña
+   spring.jpa.hibernate.ddl-auto=update
+
+   Ejecutar el proyecto
+      ./mvnw spring-boot:run
+
+Autora
+
+Proyecto desarrollado por Jacqueline Jantman como parte de mi portfolio de desarrollo backend.
+
+
