@@ -2,7 +2,6 @@ package com.hospital.backend.controller;
 
 import com.hospital.backend.model.DisponibilidadDoctor;
 import com.hospital.backend.service.DisponibilidadDoctorService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/api/disponibilidad")
 public class DisponibilidadDoctorController {
 
-    @Autowired
-    private DisponibilidadDoctorService disponibilidadService;
+    private final DisponibilidadDoctorService disponibilidadService;
+
+    public DisponibilidadDoctorController(DisponibilidadDoctorService disponibilidadService) {
+        this.disponibilidadService = disponibilidadService;
+    }
 
     @GetMapping
     public List<DisponibilidadDoctor> listarTodos() {

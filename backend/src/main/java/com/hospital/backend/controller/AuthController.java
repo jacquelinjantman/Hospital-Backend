@@ -7,34 +7,34 @@ import com.hospital.backend.model.Usuario;
 import com.hospital.backend.repository.PacienteRepository;
 import com.hospital.backend.repository.UsuarioRepository;
 import com.hospital.backend.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.hospital.backend.model.Paciente;
 
-
 import java.util.Map;
 
 @RestController
-@ RequestMapping("/api/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
-    
-    @Autowired
+
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private JwtUtil jwtUtil;
+    private PacienteRepository pacienteRepository;
 
-    @Autowired
-private PacienteRepository pacienteRepository;
+    public AuthController(UsuarioRepository usuarioRepository,
+            PasswordEncoder passwordEncoder,
+            JwtUtil jwtUtil,
+            PacienteRepository pacienteRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.pacienteRepository = pacienteRepository;
+    }
 
-
-     @PostMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Usuario usuario = usuarioRepository.findByEmail(loginRequest.getEmail())
                 .orElse(null);
@@ -48,36 +48,34 @@ private PacienteRepository pacienteRepository;
         return ResponseEntity.ok(Map.of(
                 "token", token,
                 "email", usuario.getEmail(),
-                "rol", usuario.getRol()
-        ));
-}
-
-@PostMapping("/registro-paciente")
-public ResponseEntity<?> registrarPaciente(@RequestBody RegistroPacienteRequest request) {
-
-    if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
-        return ResponseEntity.badRequest().body("Ese email ya está registrado");
+                "rol", usuario.getRol()));
     }
-  Usuario usuario = new Usuario();
-    usuario.setEmail(request.getEmail());
-    usuario.setPassword(passwordEncoder.encode(request.getPassword()));
-    usuario.setRol(Rol.PACIENTE);
-    usuario = usuarioRepository.save(usuario);
 
-Paciente paciente = new Paciente();
-    paciente.setUsuario(usuario);
-    paciente.setNombreCompleto(request.getNombreCompleto());
-    paciente.setFechaNacimiento(request.getFechaNacimiento());
-    paciente.setTelefono(request.getTelefono());
-    paciente.setDni(request.getDni());
-    pacienteRepository.save(paciente);
+    @PostMapping("/registro-paciente")
+    public ResponseEntity<?> registrarPaciente(@RequestBody RegistroPacienteRequest request) {
 
-    String token = jwtUtil.generarToken(usuario.getEmail(), usuario.getRol().name());
+        if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest().body("Ese email ya está registrado");
+        }
+        Usuario usuario = new Usuario();
+        usuario.setEmail(request.getEmail());
+        usuario.setPassword(passwordEncoder.encode(request.getPassword()));
+        usuario.setRol(Rol.PACIENTE);
+        usuario = usuarioRepository.save(usuario);
 
-    return ResponseEntity.ok(Map.of(
-            "token", token,
-            "email", usuario.getEmail(),
-            "rol", usuario.getRol()
-    ));
-}
+        Paciente paciente = new Paciente();
+        paciente.setUsuario(usuario);
+        paciente.setNombreCompleto(request.getNombreCompleto());
+        paciente.setFechaNacimiento(request.getFechaNacimiento());
+        paciente.setTelefono(request.getTelefono());
+        paciente.setDni(request.getDni());
+        pacienteRepository.save(paciente);
+
+        String token = jwtUtil.generarToken(usuario.getEmail(), usuario.getRol().name());
+
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "email", usuario.getEmail(),
+                "rol", usuario.getRol()));
+    }
 }

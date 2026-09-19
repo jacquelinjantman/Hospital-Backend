@@ -5,7 +5,6 @@ import com.hospital.backend.repository.DoctorRepository;
 import com.hospital.backend.repository.PacienteRepository;
 import com.hospital.backend.repository.UsuarioRepository;
 import com.hospital.backend.service.TurnoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,17 +17,20 @@ import java.util.stream.Collectors;
 
 public class TurnoController {
 
-    @Autowired
-    private TurnoService turnoService;
+    private final TurnoService turnoService;
+    private final UsuarioRepository usuarioRepository;
+    private final DoctorRepository doctorRepository;
+    private final PacienteRepository pacienteRepository;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private DoctorRepository doctorRepository;
-
-    @Autowired
-    private PacienteRepository pacienteRepository;
+    public TurnoController(TurnoService turnoService,
+            UsuarioRepository usuarioRepository,
+            DoctorRepository doctorRepository,
+            PacienteRepository pacienteRepository) {
+        this.turnoService = turnoService;
+        this.usuarioRepository = usuarioRepository;
+        this.doctorRepository = doctorRepository;
+        this.pacienteRepository = pacienteRepository;
+    }
 
     @GetMapping
     public List<Turno> listarTodos() {

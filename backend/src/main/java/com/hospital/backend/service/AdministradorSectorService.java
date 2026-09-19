@@ -4,20 +4,24 @@ import com.hospital.backend.model.*;
 import com.hospital.backend.repository.AdministradorRepository;
 import com.hospital.backend.repository.AdministradorSectorRepository;
 import com.hospital.backend.repository.EspecialidadRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AdministradorSectorService {
 
-    @Autowired
-    private AdministradorRepository administradorRepository;
+    private final AdministradorRepository administradorRepository;
 
-    @Autowired
-    private EspecialidadRepository especialidadRepository;
+    private final EspecialidadRepository especialidadRepository;
 
-    @Autowired
-    private AdministradorSectorRepository administradorSectorRepository;
+    private final AdministradorSectorRepository administradorSectorRepository;
+
+    public AdministradorSectorService(AdministradorRepository administradorRepository,
+            EspecialidadRepository especialidadRepository,
+            AdministradorSectorRepository administradorSectorRepository) {
+        this.administradorRepository = administradorRepository;
+        this.especialidadRepository = especialidadRepository;
+        this.administradorSectorRepository = administradorSectorRepository;
+    }
 
     public AdministradorSector asignar(Long administradorId, Long especialidadId) {
         Administrador administrador = administradorRepository.findById(administradorId)

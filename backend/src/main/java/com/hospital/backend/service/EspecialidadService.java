@@ -2,7 +2,6 @@ package com.hospital.backend.service;
 
 import com.hospital.backend.model.Especialidad;
 import com.hospital.backend.repository.EspecialidadRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.Optional;
 @Service
 public class EspecialidadService {
 
-    @Autowired
-    private EspecialidadRepository especialidadRepository;
+    private final EspecialidadRepository especialidadRepository;
+
+    public EspecialidadService(EspecialidadRepository especialidadRepository) {
+        this.especialidadRepository = especialidadRepository;
+    }
 
     public List<Especialidad> listarTodos() {
         return especialidadRepository.findAll();

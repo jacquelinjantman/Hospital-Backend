@@ -1,9 +1,7 @@
 package com.hospital.backend.controller;
 
-
 import com.hospital.backend.model.Especialidad;
 import com.hospital.backend.service.EspecialidadService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +12,11 @@ import java.util.List;
 
 public class EspecialidadController {
 
-    @Autowired
-    private EspecialidadService especialidadService;
+    private final EspecialidadService especialidadService;
+
+    public EspecialidadController(EspecialidadService especialidadService) {
+        this.especialidadService = especialidadService;
+    }
 
     @GetMapping
     public List<Especialidad> listarTodos() {

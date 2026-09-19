@@ -4,7 +4,6 @@ import com.hospital.backend.model.Doctor;
 import com.hospital.backend.model.EstadoTurno;
 import com.hospital.backend.repository.DoctorRepository;
 import com.hospital.backend.repository.TurnoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +12,15 @@ import java.util.Optional;
 @Service
 public class DoctorService {
 
-    @Autowired
-    private DoctorRepository doctorRepository;
+    private final DoctorRepository doctorRepository;
 
-    @Autowired
-    private TurnoRepository turnoRepository;
+    private final TurnoRepository turnoRepository;
+
+    public DoctorService(DoctorRepository doctorRepository,
+            TurnoRepository turnoRepository) {
+        this.doctorRepository = doctorRepository;
+        this.turnoRepository = turnoRepository;
+    }
 
     public List<Doctor> listarTodos() {
         return doctorRepository.findAll();
@@ -37,10 +40,10 @@ public class DoctorService {
 
     public void darDeBaja(Long doctorId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-            .orElseThrow(() -> new RuntimeException("Doctor no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Doctor no encontrado"));
 
         boolean tieneTurnosPendientes = turnoRepository
-            .existsByDoctorIdAndEstadoIn(doctorId, List.of(EstadoTurno.PENDIENTE, EstadoTurno.CONFIRMADO));
+                .existsByDoctorIdAndEstadoIn(doctorId, List.of(EstadoTurno.PENDIENTE, EstadoTurno.CONFIRMADO));
 
         if (tieneTurnosPendientes) {
             throw new RuntimeException("No se puede dar de baja: el doctor tiene turnos pendientes o confirmados");

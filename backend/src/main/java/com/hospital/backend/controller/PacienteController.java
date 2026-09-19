@@ -2,7 +2,6 @@ package com.hospital.backend.controller;
 
 import com.hospital.backend.model.Paciente;
 import com.hospital.backend.service.PacienteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/api/pacientes")
 public class PacienteController {
 
-    @Autowired
-    private PacienteService pacienteService;
+    private final PacienteService pacienteService;
+
+    public PacienteController(PacienteService pacienteService) {
+        this.pacienteService = pacienteService;
+    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'DIRECTOR', 'DOCTOR')")
     @GetMapping

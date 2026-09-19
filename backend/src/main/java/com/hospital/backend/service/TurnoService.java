@@ -4,21 +4,22 @@ import com.hospital.backend.model.Turno;
 import com.hospital.backend.model.DisponibilidadDoctor;
 import com.hospital.backend.repository.DisponibilidadDoctorRepository;
 import com.hospital.backend.repository.TurnoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TurnoService {
 
-    @Autowired
     private TurnoRepository turnoRepository;
-
-    @Autowired 
     private DisponibilidadDoctorRepository disponibilidadDoctorRepository;
+
+    public TurnoService(TurnoRepository turnoRepository,
+            DisponibilidadDoctorRepository disponibilidadDoctorRepository) {
+        this.disponibilidadDoctorRepository = disponibilidadDoctorRepository;
+        this.turnoRepository = turnoRepository;
+    }
 
     public List<Turno> listarTodos() {
         return turnoRepository.findAll();
@@ -29,15 +30,14 @@ public class TurnoService {
     }
 
     public Turno guardar(Turno turno) {
-       var diaSemana = turno.getFechaHora().getDayOfWeek();
+        var diaSemana = turno.getFechaHora().getDayOfWeek();
         var horaTurno = turno.getFechaHora().toLocalTime();
 
-   List<DisponibilidadDoctor> bloques = disponibilidadDoctorRepository
-        .findByDoctorIdAndDiaSemana(turno.getDoctor().getId(), diaSemana);
+        List<DisponibilidadDoctor> bloques = disponibilidadDoctorRepository
+                .findByDoctorIdAndDiaSemana(turno.getDoctor().getId(), diaSemana);
 
-        boolean dentroDeHorario = bloques.stream().anyMatch(b ->
-                !horaTurno.isBefore(b.getHoraInicio()) && !horaTurno.isAfter(b.getHoraFin())
-        );
+        boolean dentroDeHorario = bloques.stream()
+                .anyMatch(b -> !horaTurno.isBefore(b.getHoraInicio()) && !horaTurno.isAfter(b.getHoraFin()));
 
         if (!dentroDeHorario) {
             throw new RuntimeException("El doctor no atiende en ese día/horario");
@@ -52,8 +52,8 @@ public class TurnoService {
 
         return turnoRepository.save(turno);
     }
+
     public void eliminar(Long id) {
         turnoRepository.deleteById(id);
     }
 }
-

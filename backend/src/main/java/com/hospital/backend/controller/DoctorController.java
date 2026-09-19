@@ -2,7 +2,6 @@ package com.hospital.backend.controller;
 
 import com.hospital.backend.model.Doctor;
 import com.hospital.backend.service.DoctorService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,8 +11,11 @@ import java.util.List;
 @RequestMapping("/api/doctors")
 public class DoctorController {
 
-    @Autowired
-    private DoctorService doctorService;
+    private final DoctorService doctorService;
+
+    public DoctorController(DoctorService doctorService) {
+        this.doctorService = doctorService;
+    }
 
     @GetMapping
     public List<Doctor> listarTodos() {

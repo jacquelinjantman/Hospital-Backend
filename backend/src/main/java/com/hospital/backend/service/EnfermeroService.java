@@ -3,7 +3,6 @@ package com.hospital.backend.service;
 import com.hospital.backend.model.Enfermero;
 import com.hospital.backend.repository.EnfermeroRepository;
 import com.hospital.backend.repository.EnfermeroSectorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,11 +11,16 @@ import java.util.Optional;
 @Service
 public class EnfermeroService {
 
-    @Autowired
-    private EnfermeroRepository enfermeroRepository;
 
-    @Autowired
-    private EnfermeroSectorRepository enfermeroSectorRepository;
+    private final EnfermeroRepository enfermeroRepository;
+    private final  EnfermeroSectorRepository enfermeroSectorRepository;
+
+    public EnfermeroService(EnfermeroRepository enfermeroRepository,
+        EnfermeroSectorRepository enfermeroSectorRepository
+    ){
+        this.enfermeroRepository = enfermeroRepository;
+        this.enfermeroSectorRepository = enfermeroSectorRepository;
+    }
 
     public List<Enfermero> listarTodos() {
         return enfermeroRepository.findAll();

@@ -3,7 +3,6 @@ package com.hospital.backend.service;
 import com.hospital.backend.model.Administrador;
 import com.hospital.backend.repository.AdministradorRepository;
 import com.hospital.backend.repository.AdministradorSectorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,11 +11,14 @@ import java.util.Optional;
 @Service
 public class AdministradorService {
 
-    @Autowired
-    private AdministradorRepository administradorRepository;
+    private final AdministradorRepository administradorRepository;
+    private final AdministradorSectorRepository administradorSectorRepository;
 
-    @Autowired
-    private AdministradorSectorRepository administradorSectorRepository;
+    public AdministradorService(AdministradorRepository administradorRepository,
+            AdministradorSectorRepository administradorSectorRepository) {
+        this.administradorRepository = administradorRepository;
+        this.administradorSectorRepository = administradorSectorRepository;
+    }
 
     public List<Administrador> listarTodos() {
         return administradorRepository.findAll();

@@ -2,7 +2,6 @@ package com.hospital.backend.controller;
 
 import com.hospital.backend.model.Enfermero;
 import com.hospital.backend.service.EnfermeroService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +11,11 @@ import java.util.List;
 @RequestMapping("/api/enfermeros")
 public class EnfermeroController {
 
-    @Autowired
-    private EnfermeroService enfermeroService;
+    private final EnfermeroService enfermeroService;
+
+    public EnfermeroController(EnfermeroService enfermeroService) {
+        this.enfermeroService = enfermeroService;
+    }
 
     @GetMapping
     public List<Enfermero> listarTodos() {
